@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging (Locked-In Syndrome)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Add some padding to the container */
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        /* Style the table */
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            margin: auto;
+        }
+
+
+
+        /* Style the table rows */
+
+
+        td {
+            padding: 10px;
+            border: 2px solid #ddd;
+            text-align: center;
+        }
+
+
+        /* Style the header and footer */
+        header,
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            height: 15vh;
+        }
+
+        /* Style the main content */
+        main {
+            background-color: #fff;
+            height: 70vh;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header></header>
+    <main>
+        <div class="container">
+            <table>
+                <thead></thead>
+                <tbody>
+                    <tr class="row0">
+                        <td class="col0">a</td>
+                        <td class="col1">b</td>
+                        <td class="col2">c</td>
+                        <td class="col3">d</td>
+                        <td class="col4">e</td>
+                        <td class="col5">f</td>
+                    </tr>
+                    <tr class="row1">
+                        <td class="col0">g</td>
+                        <td class="col1">h</td>
+                        <td class="col2">i</td>
+                        <td class="col3">j</td>
+                        <td class="col4">k</td>
+                        <td class="col5">l</td>
+                    </tr>
+                    <tr class="row2">
+                        <td class="col0">m</td>
+                        <td class="col1">n</td>
+                        <td class="col2">o</td>
+                        <td class="col3">p</td>
+                        <td class="col4">q</td>
+                        <td class="col5">r</td>
+                    </tr>
+                    <tr class="row3">
+                        <td class="col0">s</td>
+                        <td class="col1">t</td>
+                        <td class="col2">u</td>
+                        <td class="col3">v</td>
+                        <td class="col4">w</td>
+                        <td class="col5">x</td>
+                    </tr>
+                    <tr class="row4">
+                        <td class="col0">y</td>
+                        <td class="col1">z</td>
+                        <td class="col2">1</td>
+                        <td class="col3">2</td>
+                        <td class="col4">3</td>
+                        <td class="col5">4</td>
+                    </tr>
+                    <tr class="row5">
+                        <td class="col0">5</td>
+                        <td class="col1">6</td>
+                        <td class="col2">7</td>
+                        <td class="col3">8</td>
+                        <td class="col4">9</td>
+                        <td class="col5">0</td>
+                    </tr>
+                    <tr class="row6">
+                        <td class="col0 col1 col2" colspan="3">_________ </td>
+                        <td class="col3 col4" colspan="2"><i class="fa fa-delete-left"></i></td>
+                        <td class="col5"><i class="fa fa-times"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+            <textarea name="" id="message" cols="30" rows="10"></textarea>
+            <button id="enter">select</button>
+            <video id="video" width="320" height="240" autoplay></video>
+        </div>
+    </main>
+    <footer></footer>
+    <script>
+        let rowIdx = 0, colIdx = 0, count = 0;
+        let isRowSelected = false, isColSelected = false;
+        let colIteration, rowIteration;
+
+        const charSet = [['a', 'b', 'c', 'd', 'e', 'f'],
+        ['g', 'h', 'i', 'j', 'k', 'l'],
+        ['m', 'n', 'o', 'p', 'q', 'r'],
+        ['s', 't', 'u', 'v', 'w', 'x'],
+        ['y', 'z', '1', '2', '3', '4'],
+        ['5', '6', '7', '8', '9', '0'],
+        [' ', ' ', ' ', ' ', ' ', ' ']];
+
+        const takeInput = () => {
+            if (rowIdx === 6 && colIdx === 5) document.querySelector('#message').value = '';
+            if (rowIdx === 6 && (colIdx === 3 || colIdx === 4)) document.querySelector('#message').value = document.querySelector('#message').value.slice(0, -1);
+            document.querySelector('#message').value += charSet[rowIdx][colIdx];
+            document.querySelector('#message').focus();
+
+        }
+        const recogniseBlink = () => {
+            if (count % 2 == 0) {
+                colIdx = (colIdx + 5) % 6;
+                clearInterval(colIteration);
+                rowIdx = 0;
+                rowIteration = setInterval(() => {
+                    const a = document.querySelectorAll('td');
+                    for (let idx = 0; idx < a.length; idx++) a[idx].style.background = 'white';
+                    for (let idx = 0; idx < 7; idx++) document.getElementsByClassName('col' + colIdx.toString())[idx].style.background = 'yellow';
+                    document.getElementsByClassName('col' + colIdx.toString())[rowIdx].style.background = 'orange';
+                    rowIdx = (rowIdx + 1) % 7;
+                }, 1500);
+            }
+            else {
+                rowIdx = (rowIdx + 6) % 7;
+                clearInterval(rowIteration);
+                takeInput();
+                colIdx = 0;
+                colIteration = setInterval(() => {
+                    const a = document.querySelectorAll('td');
+                    for (let idx = 0; idx < a.length; idx++) a[idx].style.background = 'white';
+                    for (let idx = 0; idx < 7; idx++) document.getElementsByClassName('col' + colIdx.toString())[idx].style.background = 'yellow';
+                    colIdx = (colIdx + 1) % 6;
+                }, 1500);
+            }
+            count = (count + 1) % 2;
+        }
+        document.getElementById('enter').addEventListener('click', recogniseBlink);
+        document.getElementById('message').addEventListener("keypress", function (event) {
+            if (event.key === "ctrl") recogniseBlink();
+        });
+        colIteration = setInterval(() => {
+            const a = document.querySelectorAll('td');
+            for (let idx = 0; idx < a.length; idx++) a[idx].style.background = 'white';
+            for (let idx = 0; idx < 7; idx++) document.getElementsByClassName('col' + colIdx.toString())[idx].style.background = 'yellow';
+            colIdx = (colIdx + 1) % 6;
+        }, 1500);
+    </script>
+</body>
+
+</html>
